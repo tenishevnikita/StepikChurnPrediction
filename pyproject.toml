@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "stepikchurnprediction"
+version = "0.1.0"
+description = ""
+authors = ["Nikita Tenishev"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.9.10"
+jupyter = "^1.0.0"
+numpy = "^1.26.0"
+pandas = "^2.1.1"
+seaborn = "^0.12.2"
+pandasql = "^0.7.3"
+scikit-learn = "^1.3.1"
+ruff = "^0.0.291"
+pytest = "^7.4.2"
+catboost = "^1.2.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
