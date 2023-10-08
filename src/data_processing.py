@@ -197,8 +197,8 @@ class DataProcessor:
 
         features_df = ps.sqldf(query)
 
-        features_df['day'] = pd.to_datetime(features_df['day'])
-        features_df['last_active_day'] = pd.to_datetime(features_df['last_active_day'])
+        features_df['day'] = pd.to_datetime(features_df['day'], format='%Y-%m-%d')
+        features_df['last_active_day'] = pd.to_datetime(features_df['last_active_day'], format='%Y-%m-%d')
 
         features_df['days_offline'] = (features_df['day'] - features_df['last_active_day']).dt.days
         features_df['avg_submits_14d'] = (features_df['sum_submits_14d'] / 14).round(2)
