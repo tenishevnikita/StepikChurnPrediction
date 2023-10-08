@@ -320,3 +320,6 @@ pyrightconfig.json
 
 **/catboost_info/
 notebooks/
+**/mlruns/
+**/mlartifacts/
+**/model/
