@@ -1,35 +1,30 @@
-import datetime
-from dataclasses import dataclass, field
+from datetime import date
+from dataclasses import dataclass
 from typing import List
 
 import yaml
-from marshmallow_dataclass import class_schema
-
-PATH = "../configs/train_config.yaml"
 
 
 @dataclass
 class TrainingPipelineParams:
-    first_course_day: datetime.date
+    first_course_day: date
     admin_ids: List[int]
     submissions_path: str
     course_structure_path: str
     model_params: dict
     use_mlflow: bool
-    checkpoint: datetime.date
+    checkpoint: date
     features: List[str]
     target: str
 
-TrainingPipelineParamsSchema = class_schema(TrainingPipelineParams)
-
 
 def read_training_pipeline_params(path: str) -> TrainingPipelineParams:
-    with open(path, "r") as input_stream:
-        config_dict = yaml.safe_load(input_stream)
-        schema = TrainingPipelineParamsSchema().load(config_dict)
-        return schema
+    with open(path, "r") as file:
+        config_dict = yaml.safe_load(file)
+        return TrainingPipelineParams(**config_dict)
 
 
 if __name__ == "__main__":
-    schema = read_training_pipeline_params(PATH)
+    path = "../configs/train_config.yaml"
+    schema = read_training_pipeline_params(path)
     print(schema)
