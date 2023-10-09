@@ -1,16 +1,19 @@
 import datetime
 import os
-from typing import Tuple
+from typing import Tuple, Union
 
 import mlflow
 import pandas as pd
 from catboost import CatBoostClassifier
 from dotenv import load_dotenv
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
 
 from src.model_fit_predict import evaluate_model, predict_model, train_model
 
 load_dotenv()
 
+Classifiers = Union[CatBoostClassifier, RandomForestClassifier, LogisticRegression]
 
 def log_experiment_mlflow(
     X_train: pd.DataFrame,
@@ -18,8 +21,9 @@ def log_experiment_mlflow(
     X_test: pd.DataFrame,
     y_test: pd.Series,
     checkpoint: datetime.date,
-    model_params: dict
-) -> Tuple[CatBoostClassifier, dict]:
+    model_params: dict,
+    model_name: str
+) -> Tuple[Classifiers, dict]:
     """Log a machine learning experiment using MLflow.
 
     Parameters
@@ -35,18 +39,24 @@ def log_experiment_mlflow(
     checkpoint : datetime.date
         The date for which predictions are made, and the model's performance is evaluated.
     model_params : dict
-        A dictionary of hyperparameters for the CatBoostClassifier.
+        A dictionary of hyperparameters and settings for the selected classifier.
+    model_name : str
+        The name of the classifier to use for the experiment.
+        Supported values: "CatBoost", "RandomForest", "LogisticRegression".
 
     Returns
     -------
     tuple
-        A tuple containing the trained CatBoostClassifier model and a dictionary of logged metrics.
+        A tuple containing the trained classifier and a dictionary of logged metrics.
     """
     mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI"))
     with mlflow.start_run() as run:
         print(f'run_id: {run.info.run_id}, status: {run.info.status}.')
 
-        model = train_model(X_train, y_train, model_params=model_params)
+        model = train_model(model_name=model_name,
+                            X_train=X_train,
+                            y_train=y_train,
+                            model_params=model_params)
 
         y_pred_proba, y_pred = predict_model(model, X_test)
 

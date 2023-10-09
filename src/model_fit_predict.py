@@ -3,18 +3,25 @@ from typing import Dict, Tuple, Union
 import numpy as np
 import pandas as pd
 from catboost import CatBoostClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import confusion_matrix, roc_auc_score
 
+Classifiers = Union[CatBoostClassifier, RandomForestClassifier, LogisticRegression]
 
 def train_model(
+    model_name: str,
     X_train: pd.DataFrame,
     y_train: pd.Series,
     model_params: Dict,
-) -> CatBoostClassifier:
+) -> Classifiers:
     """Train a CatBoostClassifier model.
 
     Parameters
     ----------
+    model_name : str
+        The name of the classifier model to train. Choose from "CatBoost", "LogisticRegression", or "RandomForest".
+
     X_train : pandas.DataFrame
         The training feature dataset.
 
@@ -22,29 +29,35 @@ def train_model(
         The target labels for training.
 
     model_params : dict
-        A dictionary containing the hyperparameters and settings for the CatBoostClassifier.
+        A dictionary containing hyperparameters and settings for the selected classifier model.
 
     Returns
     -------
     model : CatBoostClassifier
         A trained CatBoostClassifier model.
     """
-    model = CatBoostClassifier(**model_params)
+    if model_name == "CatBoost":
+        model = CatBoostClassifier(**model_params)
+    elif model_name == "LogisticRegression":
+        model = LogisticRegression(**model_params)
+    elif model_name == "RandomForest":
+        model = RandomForestClassifier(**model_params)
+    else:
+        raise ValueError(f"Unsupported model name: {model_name}")
     model.fit(X_train, y_train)
     return model
 
 
 def predict_model(
-    model: CatBoostClassifier,
+    model: Classifiers,
     X_test: pd.DataFrame,
 ) -> Tuple[np.ndarray, np.ndarray]:
-    """Make predictions using a trained CatBoostClassifier model.
+    """Make predictions using a trained model.
 
     Parameters
     ----------
-    model : CatBoostClassifier
-        A trained CatBoostClassifier model.
-
+    model : Classifiers
+        A trained classifier model (e.g., CatBoostClassifier, LogisticRegression, or RandomForestClassifier).
     X_test : pandas.DataFrame
         The feature dataset for which predictions are to be made.
 

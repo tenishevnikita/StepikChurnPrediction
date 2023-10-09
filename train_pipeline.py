@@ -35,6 +35,7 @@ def train_pipeline(config_path: str):
 
     if training_pipeline_params.use_mlflow:
         model, metrics = log_experiment_mlflow(
+            model_name=training_pipeline_params.model_name,
             X_train=X_train,
             y_train=y_train,
             X_test=X_test,
@@ -44,11 +45,11 @@ def train_pipeline(config_path: str):
         )
     else:
         model = train_model(
+            model_name=training_pipeline_params.model_name,
             X_train=X_train,
             y_train=y_train,
             model_params=training_pipeline_params.model_params
         )
-
         y_pred_proba, y_pred = predict_model(model=model, X_test=X_test)
         metrics = evaluate_model(y_true=y_test, y_pred=y_pred, y_pred_proba=y_pred_proba)
         print(metrics)

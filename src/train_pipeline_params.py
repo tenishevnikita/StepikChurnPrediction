@@ -1,6 +1,6 @@
 import datetime
 from dataclasses import dataclass, field
-from typing import List
+from typing import List, Union
 
 import yaml
 from marshmallow_dataclass import class_schema
@@ -19,6 +19,7 @@ class TrainingPipelineParams:
     checkpoint: datetime.date
     features: List[str]
     target: str
+    model_name: str
 
 TrainingPipelineParamsSchema = class_schema(TrainingPipelineParams)
 

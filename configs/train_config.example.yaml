@@ -8,3 +8,4 @@ use_mlflow:
 checkpoint:
 features:
 target:
+model_name:
